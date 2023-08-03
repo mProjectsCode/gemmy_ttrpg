@@ -42,16 +42,16 @@ const GEMMY_IDLE_QUOTES = [
 	"Ah, my favoured enemy. Something alive.",
 	"I slap the barrel with my member!... the 'barrel' open's its mouth!",
 	"I'm not deprived, I'm depraved.",
-	"You need a free hand to attempt a grapple"
-	`Careful how much you carry; the GM might actually ask you to calculate your inventory weight!`
-	`Don't do that! Then we'll have to go look up the grapple rules!`
-	`50 page backstory... NOPE`
-	`It's astounding anyone can understand you, with all those Nat 1 Charisma rolls.`
-	`The cheddar monks are here to save the day!`
-	`What would Matt Mercer do?`
-	`You've been Gygaxed.`
-	`STEP AWAY FROM THE PURCHASE MORE DICE BUTTON`
-	`After undergoing intense continental pressure, magma-fueled transformations, and countless eons of effort, I have attained my current state, while you struggle to complete this simple note.`
+	"You need a free hand to attempt a grapple",
+	`Careful how much you carry; the GM might actually ask you to calculate your inventory weight!`,
+	`Don't do that! Then we'll have to go look up the grapple rules!`,
+	`50 page backstory... NOPE`,
+	`It's astounding anyone can understand you, with all those Nat 1 Charisma rolls.`,
+	`The cheddar monks are here to save the day!`,
+	`What would Matt Mercer do?`,
+	`You've been Gygaxed.`,
+	`STEP AWAY FROM THE PURCHASE MORE DICE BUTTON`,
+	`After thousands of years, I have attained my current state, while you struggle to complete this simple note.`
 	]
 	;
 
@@ -66,11 +66,11 @@ const WRITING_MODE_QUOTES = [
 	`Doesn't matter how much you plan... they will derail anyway!`,
 	`Maybe it's time to go get some water or coffee.`,
 	`That's not how rivers are in real-life...`,
-	`Anything is better than a blank page, even me. Write something!`
-	`Have you given out Inspiration recently?`
-	`Call me Jeeves. I. Dare. You.`
-	`I cast 'Summon Bigger Fish`
-	`Do you touch it?`
+	`Anything is better than a blank page, even me. Write something!`,
+	`Have you given out Inspiration recently?`,
+	`Call me Jeeves. I. Dare. You.`,
+	`I cast 'Summon Bigger Fish`,
+	`Do you touch it?`,
 	`What would Matt Mercer do?`
 	
 	
