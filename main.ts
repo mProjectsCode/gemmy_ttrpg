@@ -20,17 +20,23 @@ import DISAPPOINT_IMG_DRACONIC from './animations/draconic/gemmy_disappoint.gif'
 
 interface GemmySettings {
 	// Add the animationSource property to the settings interface
-	animationSource: 'draconic' | 'original';
+	animationSource: 'original' | 'draconic';
 	// how often does Gemmy talk in idle mode, in minutes
 	idleTalkFrequency: number;
 	// the number of minutes you must write before Gemmy appears to mock you
 	writingModeGracePeriod: number;
+	// Create Save States
+	appeared: boolean;
+	inWritingMode: boolean;
 }
 
 const DEFAULT_SETTINGS: GemmySettings = {
 	animationSource: 'original',
 	idleTalkFrequency: 1,
-	writingModeGracePeriod: 1
+	writingModeGracePeriod: 1,
+	// Create Save States
+	appeared: false,
+	inWritingMode: false,
 };
 
 
@@ -114,8 +120,8 @@ export default class Gemmy extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// Load the default animation source (draconic in this case)
-		await this.loadAnimations('original');
+		// Load the declared animation source
+		await this.loadAnimations(this.settings.animationSource);
 
 		let gemmyEl = this.gemmyEl = createDiv('gemmy-container');
 		gemmyEl.setAttribute('aria-label-position', 'top');
@@ -240,6 +246,7 @@ export default class Gemmy extends Plugin {
 
 		document.body.appendChild(gemmyEl);
 		gemmyEl.show();
+		this.appeared = true;
 	}
 
 	disappear() {
@@ -254,6 +261,7 @@ export default class Gemmy extends Plugin {
 			this.appeared = false;
 		}, 1300);
 
+		this.appeared = false;
 	}
 
 	enterWritingMode() {
@@ -340,9 +348,13 @@ export default class Gemmy extends Plugin {
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.appeared = this.settings.appeared;
+		this.inWritingMode = this.settings.inWritingMode;
 	}
 
 	async saveSettings() {
+		this.settings.appeared = this.appeared;
+		this.settings.inWritingMode = this.inWritingMode;
 		await this.saveData(this.settings);
 	}
 }
@@ -366,7 +378,7 @@ class GemmySettingTab extends PluginSettingTab {
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOption('original', 'Original')
-					.addOption('draconic', 'draconic')
+					.addOption('draconic', 'Draconic')
 					.setValue(this.plugin.settings.animationSource)
 					.onChange(async (value) => {
 						// Explicitly cast the value to the correct type
@@ -375,6 +387,9 @@ class GemmySettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						// Reload animations when the source changes
 						await this.plugin.loadAnimations(animationSource);
+
+						// Show Gemmy with the new animations after changing the source
+						this.plugin.appear();
 					})
 			);
 
