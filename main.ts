@@ -1,13 +1,26 @@
 import { App, debounce, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import EMERGE_MOTION from './animations/gemmy_emerge.gif';
-import POP_MOTION from './animations/gemmy_pop.gif';
-import DISAPPEAR_MOTION from './animations/gemmy_disappear.gif';
-import ANGRY_MOTION from './animations/gemmy_angry.gif';
-import LOOK_MOTION from './animations/gemmy_lookAround.gif'
-import IDLE_MOTION from './animations/gemmy_idle.gif'
-import DISAPPOINT_IMG from './animations/gemmy_disappoint.gif'
+
+// Original Animations
+import EMERGE_MOTION_ORIGINAL from './animations/original/gemmy_emerge.gif';
+import POP_MOTION_ORIGINAL from './animations/original/gemmy_pop.gif';
+import DISAPPEAR_MOTION_ORIGINAL from './animations/original/gemmy_disappear.gif';
+import ANGRY_MOTION_ORIGINAL from './animations/original/gemmy_angry.gif';
+import LOOK_MOTION_ORIGINAL from './animations/original/gemmy_lookAround.gif'
+import IDLE_MOTION_ORIGINAL from './animations/original/gemmy_idle.gif'
+import DISAPPOINT_IMG_ORIGINAL from './animations/original/gemmy_disappoint.gif'
+
+// Draconic Animations
+import EMERGE_MOTION_DRACONIC from './animations/draconic/gemmy_emerge.gif';
+import POP_MOTION_DRACONIC from './animations/draconic/gemmy_pop.gif';
+import DISAPPEAR_MOTION_DRACONIC from './animations/draconic/gemmy_disappear.gif';
+import ANGRY_MOTION_DRACONIC from './animations/draconic/gemmy_angry.gif';
+import LOOK_MOTION_DRACONIC from './animations/draconic/gemmy_lookAround.gif'
+import IDLE_MOTION_DRACONIC from './animations/draconic/gemmy_idle.gif'
+import DISAPPOINT_IMG_DRACONIC from './animations/draconic/gemmy_disappoint.gif'
 
 interface GemmySettings {
+	// Add the animationSource property to the settings interface
+	animationSource: 'draconic' | 'original';
 	// how often does Gemmy talk in idle mode, in minutes
 	idleTalkFrequency: number;
 	// the number of minutes you must write before Gemmy appears to mock you
@@ -15,6 +28,7 @@ interface GemmySettings {
 }
 
 const DEFAULT_SETTINGS: GemmySettings = {
+	animationSource: 'original',
 	idleTalkFrequency: 1,
 	writingModeGracePeriod: 1
 };
@@ -87,8 +101,21 @@ export default class Gemmy extends Plugin {
 	writingModeTimeout: number;
 	appeared: boolean = false;
 
+
+	// Define variables to hold the selected animations
+	EMERGE_MOTION: string;
+	POP_MOTION: string;
+	DISAPPEAR_MOTION: string;
+	ANGRY_MOTION: string;
+	LOOK_MOTION: string;
+	IDLE_MOTION: string;
+	DISAPPOINT_IMG: string;
+
 	async onload() {
 		await this.loadSettings();
+
+		// Load the default animation source (draconic in this case)
+		await this.loadAnimations('original');
 
 		let gemmyEl = this.gemmyEl = createDiv('gemmy-container');
 		gemmyEl.setAttribute('aria-label-position', 'top');
@@ -146,7 +173,7 @@ export default class Gemmy extends Plugin {
 				return;
 			}
 
-			this.imageEl.setAttribute('src', IDLE_MOTION);
+			this.imageEl.setAttribute('src', this.IDLE_MOTION);
 			this.startNextIdleTimeout();
 		});
 
@@ -165,14 +192,36 @@ export default class Gemmy extends Plugin {
 		app.workspace.onLayoutReady(this.appear.bind(this));
 	}
 
+	async loadAnimations(animationSource: 'draconic' | 'original') {
+		if (animationSource === 'draconic') {
+			// Set the animations to the draconic versions
+			this.EMERGE_MOTION = EMERGE_MOTION_DRACONIC;
+			this.POP_MOTION = POP_MOTION_DRACONIC;
+			this.DISAPPEAR_MOTION = DISAPPEAR_MOTION_DRACONIC;
+			this.ANGRY_MOTION = ANGRY_MOTION_DRACONIC;
+			this.LOOK_MOTION = LOOK_MOTION_DRACONIC;
+			this.IDLE_MOTION = IDLE_MOTION_DRACONIC;
+			this.DISAPPOINT_IMG = DISAPPOINT_IMG_DRACONIC;
+		} else {
+			// Set the animations to the original versions
+			this.EMERGE_MOTION = EMERGE_MOTION_ORIGINAL;
+			this.POP_MOTION = POP_MOTION_ORIGINAL;
+			this.DISAPPEAR_MOTION = DISAPPEAR_MOTION_ORIGINAL;
+			this.ANGRY_MOTION = ANGRY_MOTION_ORIGINAL;
+			this.LOOK_MOTION = LOOK_MOTION_ORIGINAL;
+			this.IDLE_MOTION = IDLE_MOTION_ORIGINAL;
+			this.DISAPPOINT_IMG = DISAPPOINT_IMG_ORIGINAL;
+		}
+	}
+
 	appear() {
 		let { gemmyEl, imageEl } = this;
 
-		imageEl.setAttribute('src', EMERGE_MOTION);
+		imageEl.setAttribute('src', this.EMERGE_MOTION);
 
 		// Quicker if we're in writing mode
 		if (this.inWritingMode) {
-			imageEl.setAttribute('src', POP_MOTION);
+			imageEl.setAttribute('src', this.POP_MOTION);
 
 			setTimeout(() => {
 				this.appeared = true;
@@ -181,10 +230,10 @@ export default class Gemmy extends Plugin {
 			}, 1800);
 		}
 		else {
-			imageEl.setAttribute('src', EMERGE_MOTION);
+			imageEl.setAttribute('src', this.EMERGE_MOTION);
 
 			setTimeout(() => {
-				imageEl.setAttribute('src', IDLE_MOTION);
+				imageEl.setAttribute('src', this.IDLE_MOTION);
 				this.appeared = true;
 			}, 3800);
 		}
@@ -197,7 +246,7 @@ export default class Gemmy extends Plugin {
 		this.idleTimeout && window.clearTimeout(this.idleTimeout);
 		this.writingModeTimeout && window.clearTimeout(this.writingModeTimeout);
 
-		this.imageEl.setAttribute('src', DISAPPEAR_MOTION);
+		this.imageEl.setAttribute('src', this.DISAPPEAR_MOTION);
 		// remote tooltip
 		this.gemmyEl.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, clientX: 10, clientY: 10 }));
 		setTimeout(() => {
@@ -268,19 +317,19 @@ export default class Gemmy extends Plugin {
 		this.gemmyEl.dispatchEvent(new MouseEvent('mouseover', { bubbles: true, clientX: 10, clientY: 10 }))
 
 		if (this.inWritingMode) {
-			this.imageEl.setAttribute('src', ANGRY_MOTION);
+			this.imageEl.setAttribute('src', this.ANGRY_MOTION);
 			setTimeout(() => {
-				this.imageEl.setAttribute('src', DISAPPOINT_IMG);
+				this.imageEl.setAttribute('src', this.DISAPPOINT_IMG);
 			}, 1000);
 		}
 		else {
-			this.imageEl.setAttribute('src', LOOK_MOTION);
+			this.imageEl.setAttribute('src', this.LOOK_MOTION);
 		}
 
 		if (!persistent) {
 			setTimeout(() => {
 				this.gemmyEl.dispatchEvent(new MouseEvent('mouseout', { bubbles: true, clientX: 10, clientY: 10 }));
-				this.imageEl.setAttribute('src', IDLE_MOTION);
+				this.imageEl.setAttribute('src', this.IDLE_MOTION);
 			}, BUBBLE_DURATION);
 		}
 	}
@@ -310,6 +359,24 @@ class GemmySettingTab extends PluginSettingTab {
 		const { containerEl } = this;
 
 		containerEl.empty();
+
+		new Setting(containerEl)
+			.setName('Animation Source')
+			.setDesc('Choose the source of Gemmy animations.')
+			.addDropdown((dropdown) =>
+				dropdown
+					.addOption('original', 'Original')
+					.addOption('draconic', 'draconic')
+					.setValue(this.plugin.settings.animationSource)
+					.onChange(async (value) => {
+						// Explicitly cast the value to the correct type
+						const animationSource = value as 'original' | 'draconic';
+						this.plugin.settings.animationSource = animationSource;
+						await this.plugin.saveSettings();
+						// Reload animations when the source changes
+						await this.plugin.loadAnimations(animationSource);
+					})
+			);
 
 		new Setting(containerEl)
 			.setName('Idle talk frequency')
