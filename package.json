@@ -1,6 +1,6 @@
 {
-	"name": "Gemmy TTRPG",
-	"version": "1.0.0",
+	"name": "@obsidian-ttrpg-community/gemmy-for-ttrpgs",
+	"version": "1.1.0",
 	"description": "Our favorite sassy Obsidian Shard, flavoured for TTRPG.",
 	"main": "main.js",
 	"scripts": {
