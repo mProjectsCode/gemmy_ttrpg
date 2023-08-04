@@ -68,10 +68,10 @@ const GEMMY_IDLE_QUOTES = [
 	`50 page backstory... NOPE`,
 	`It's astounding anyone can understand you, with all those Nat 1 Charisma rolls.`,
 	`The cheddar monks are here to save the day!`,
-	`What would Matt Mercer do?`,
 	`You've been Gygaxed.`,
 	`STEP AWAY FROM THE PURCHASE MORE DICE BUTTON`,
-	`After thousands of years, I have attained my current state, while you struggle to complete this simple note.`
+	`After thousands of years, I have attained my current state, while you struggle to complete this simple note.`,
+	`You are a background character in your own life.`
 	]
 	;
 
@@ -91,9 +91,9 @@ const WRITING_MODE_QUOTES = [
 	`Call me Jeeves. I. Dare. You.`,
 	`I cast 'Summon Bigger Fish`,
 	`Do you touch it?`,
-	`What would Matt Mercer do?`
-	
-	
+	`What would Matt Mercer do?`,
+	`To continue, please insert more credits`,
+	`Have you considered just... Not?`
 ];
 
 const BUBBLE_DURATION = 5000;
@@ -107,6 +107,8 @@ export default class Gemmy extends Plugin {
 	writingModeTimeout: number;
 	appeared: boolean = false;
 
+	// Add the loadingAnimations flag to reduce delay in changing animations in the same save state
+	loadingAnimations: boolean = false;
 
 	// Define variables to hold the selected animations
 	EMERGE_MOTION: string;
@@ -198,27 +200,36 @@ export default class Gemmy extends Plugin {
 		app.workspace.onLayoutReady(this.appear.bind(this));
 	}
 
-	async loadAnimations(animationSource: 'draconic' | 'original') {
-		if (animationSource === 'draconic') {
-			// Set the animations to the draconic versions
-			this.EMERGE_MOTION = EMERGE_MOTION_DRACONIC;
-			this.POP_MOTION = POP_MOTION_DRACONIC;
-			this.DISAPPEAR_MOTION = DISAPPEAR_MOTION_DRACONIC;
-			this.ANGRY_MOTION = ANGRY_MOTION_DRACONIC;
-			this.LOOK_MOTION = LOOK_MOTION_DRACONIC;
-			this.IDLE_MOTION = IDLE_MOTION_DRACONIC;
-			this.DISAPPOINT_IMG = DISAPPOINT_IMG_DRACONIC;
-		} else {
-			// Set the animations to the original versions
-			this.EMERGE_MOTION = EMERGE_MOTION_ORIGINAL;
-			this.POP_MOTION = POP_MOTION_ORIGINAL;
-			this.DISAPPEAR_MOTION = DISAPPEAR_MOTION_ORIGINAL;
-			this.ANGRY_MOTION = ANGRY_MOTION_ORIGINAL;
-			this.LOOK_MOTION = LOOK_MOTION_ORIGINAL;
-			this.IDLE_MOTION = IDLE_MOTION_ORIGINAL;
-			this.DISAPPOINT_IMG = DISAPPOINT_IMG_ORIGINAL;
+	async loadAnimations(animationSource: 'original' | 'draconic') {
+		if (this.loadingAnimations) {
+			return;
+		}
+		this.loadingAnimations = true;
+		try {
+			if (animationSource === 'draconic') {
+				// Set the animations to the draconic versions
+				this.EMERGE_MOTION = EMERGE_MOTION_DRACONIC;
+				this.POP_MOTION = POP_MOTION_DRACONIC;
+				this.DISAPPEAR_MOTION = DISAPPEAR_MOTION_DRACONIC;
+				this.ANGRY_MOTION = ANGRY_MOTION_DRACONIC;
+				this.LOOK_MOTION = LOOK_MOTION_DRACONIC;
+				this.IDLE_MOTION = IDLE_MOTION_DRACONIC;
+				this.DISAPPOINT_IMG = DISAPPOINT_IMG_DRACONIC;
+			} else {
+				// Set the animations to the original versions
+				this.EMERGE_MOTION = EMERGE_MOTION_ORIGINAL;
+				this.POP_MOTION = POP_MOTION_ORIGINAL;
+				this.DISAPPEAR_MOTION = DISAPPEAR_MOTION_ORIGINAL;
+				this.ANGRY_MOTION = ANGRY_MOTION_ORIGINAL;
+				this.LOOK_MOTION = LOOK_MOTION_ORIGINAL;
+				this.IDLE_MOTION = IDLE_MOTION_ORIGINAL;
+				this.DISAPPOINT_IMG = DISAPPOINT_IMG_ORIGINAL;
+			}
+		} finally {
+			this.loadingAnimations = false;
 		}
 	}
+
 
 	appear() {
 		let { gemmyEl, imageEl } = this;
