@@ -9,9 +9,7 @@ export interface Quotes {
 
 // these quotes can appear in every animation mode
 export const GRANITE_BASE_QUOTES: Quotes = {
-	general: [
-
-	],
+	general: [],
 	idle: [
 		"You can't arrest us! We already ate the evidence!",
 		"Don't ever split the party!",
@@ -65,16 +63,16 @@ export const GRANITE_BASE_QUOTES: Quotes = {
 		`To continue, please insert more credits`,
 		`Have you considered just... Not?`,
 	],
-}
+};
 
 export const GEMMY_EXCLUSIVE_QUOTES: Quotes = {
 	general: [],
 	idle: [],
 	writingMode: [],
-}
+};
 
 export const DRAKE_EXCLUSIVE_QUOTES: Quotes = {
 	general: [],
 	idle: [],
 	writingMode: [],
-}
+};
